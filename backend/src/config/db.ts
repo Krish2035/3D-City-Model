@@ -127,9 +127,13 @@ export const localStore = new LocalStore();
 
 let pgPool: Pool | null = null;
 if (process.env.DATABASE_URL) {
+  const isSsl =
+    process.env.NODE_ENV === 'production' ||
+    process.env.DATABASE_URL.includes('sslmode=require') ||
+    process.env.DATABASE_URL.includes('neon.tech');
   pgPool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+    ssl: isSsl ? { rejectUnauthorized: false } : false
   });
   pgPool.on('error', (err) => {
     console.error('Unexpected error on idle PostgreSQL client, falling back to local storage', err);
