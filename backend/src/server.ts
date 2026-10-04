@@ -30,6 +30,21 @@ app.use('/api/project', projectRoutes);
 app.use('/api/plots', plotRoutes);
 app.use('/api/enquiries', enquiryRoutes);
 
+// Root landing endpoint
+app.get('/', (req, res) => {
+  res.json({
+    name: '3D City Model & Society Platform API',
+    status: 'online',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      plots: '/api/plots',
+      project: '/api/project',
+      enquiries: '/api/enquiries'
+    }
+  });
+});
+
 // Health check
 app.get('/health', (req, res) => {
   res.json({
