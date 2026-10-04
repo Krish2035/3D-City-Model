@@ -296,11 +296,12 @@ export function InteractiveMasterPlan({
     >
       {/* Dynamic 2D/3D Map Canvas - Origin 0 0 for exact mathematical screen centering */}
       <div
-        className={`absolute left-0 top-0 w-[1920px] h-[912px] origin-top-left transition-transform duration-700 ease-out select-none pointer-events-auto ${
-          is3D ? 'map-layer-3d active-3d' : ''
-        }`}
+        className={`absolute left-0 top-0 w-[1920px] h-[912px] origin-top-left select-none pointer-events-auto ${
+          isDragging ? 'transition-none' : 'transition-transform duration-500 ease-out'
+        } ${is3D ? 'map-layer-3d active-3d' : ''}`}
         style={{
           transformOrigin: '0 0',
+          willChange: isDragging ? 'transform' : 'auto',
           transform: is3D
             ? `translate3d(${pan.x}px, ${pan.y}px, 0px) scale(${scale * 1.08}) rotateX(46deg) rotateZ(${rotation - 10}deg)`
             : `translate3d(${pan.x}px, ${pan.y}px, 0px) scale(${scale})`,

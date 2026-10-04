@@ -13,29 +13,31 @@ import { VirtualJoystick, JoystickVector } from './VirtualJoystick';
 
 function createPlotTexture(number: number, isAvailable: boolean) {
   const canvas = document.createElement('canvas');
-  canvas.width = 256;
-  canvas.height = 256;
+  canvas.width = 128;
+  canvas.height = 128;
   const ctx = canvas.getContext('2d');
   if (!ctx) return null;
 
   // Background
   ctx.fillStyle = isAvailable ? '#ded4bd' : '#93c5fd';
-  ctx.fillRect(0, 0, 256, 256);
+  ctx.fillRect(0, 0, 128, 128);
 
   // Border
   ctx.strokeStyle = '#5a554a';
-  ctx.lineWidth = 10;
-  ctx.strokeRect(5, 5, 246, 246);
+  ctx.lineWidth = 6;
+  ctx.strokeRect(3, 3, 122, 122);
 
   // Plot Number
   ctx.fillStyle = '#111827';
-  ctx.font = 'bold 110px "Inter", sans-serif';
+  ctx.font = 'bold 56px "Inter", sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  ctx.fillText(String(number), 128, 128);
+  ctx.fillText(String(number), 64, 64);
 
   const texture = new THREE.CanvasTexture(canvas);
-  texture.anisotropy = 8;
+  texture.generateMipmaps = false;
+  texture.minFilter = THREE.LinearFilter;
+  texture.magFilter = THREE.LinearFilter;
   return texture;
 }
 
@@ -319,7 +321,7 @@ function PerimeterWall3D() {
 // =========================================================================
 // 5. Decorative Street Lampposts
 // =========================================================================
-function Lampposts3D() {
+function Lampposts3D({ isMobile = false }: { isMobile?: boolean }) {
   const lampPositions = useMemo(() => {
     const list: [number, number, number][] = [];
     // Along Main Spine (X = -10)
@@ -344,11 +346,11 @@ function Lampposts3D() {
     <group>
       {lampPositions.map(([x, y, z], i) => (
         <group key={i} position={[x, y, z]}>
-          <mesh position={[0, 0.2, 0]} castShadow>
+          <mesh position={[0, 0.2, 0]} castShadow={!isMobile}>
             <cylinderGeometry args={[0.25, 0.35, 0.4, 8]} />
             <meshStandardMaterial color="#1e293b" metalness={0.7} />
           </mesh>
-          <mesh position={[0, 2.5, 0]} castShadow>
+          <mesh position={[0, 2.5, 0]} castShadow={!isMobile}>
             <cylinderGeometry args={[0.08, 0.12, 4.6, 8]} />
             <meshStandardMaterial color="#334155" metalness={0.8} roughness={0.2} />
           </mesh>
@@ -361,15 +363,9 @@ function Lampposts3D() {
             <meshStandardMaterial
               color="#fef3c7"
               emissive="#fde047"
-              emissiveIntensity={1.5}
+              emissiveIntensity={1.8}
             />
           </mesh>
-          <pointLight
-            position={[x > -10 ? -0.8 : 0.8, 4.4, 0]}
-            intensity={0.35}
-            distance={10}
-            color="#fef08a"
-          />
         </group>
       ))}
     </group>
@@ -463,6 +459,7 @@ interface PlotsCollection3DProps {
   hoveredPlot: SocietyPlot | null;
   onSelectPlot: (plot: SocietyPlot) => void;
   onHoverPlot: (plot: SocietyPlot | null) => void;
+  isMobile?: boolean;
 }
 
 function PlotsCollection3D({
@@ -471,6 +468,7 @@ function PlotsCollection3D({
   hoveredPlot,
   onSelectPlot,
   onHoverPlot,
+  isMobile = false,
 }: PlotsCollection3DProps) {
   const center2DX = 973;
   const center2DY = 412;
@@ -521,7 +519,7 @@ function PlotsCollection3D({
             }}
           >
             {/* Raised Plot 3D Slab */}
-            <mesh position={[0, posY, 0]} castShadow receiveShadow>
+            <mesh position={[0, posY, 0]} castShadow={!isMobile} receiveShadow={!isMobile}>
               <boxGeometry args={[sizeX, slabHeight, sizeZ]} />
               <meshStandardMaterial
                 color={
@@ -559,13 +557,13 @@ function PlotsCollection3D({
 
             {/* Outline border when selected or hovered */}
             {(isSelected || isHovered) && (
-              <lineSegments position={[0, slabHeight + 0.02, 0]}>
-                <edgesGeometry args={[new THREE.BoxGeometry(sizeX * 1.02, 0.05, sizeZ * 1.02)]} />
-                <lineBasicMaterial
+              <mesh position={[0, slabHeight + 0.02, 0]}>
+                <boxGeometry args={[sizeX * 1.02, 0.05, sizeZ * 1.02]} />
+                <meshBasicMaterial
                   color={isSelected ? '#38bdf8' : '#ffffff'}
-                  linewidth={2}
+                  wireframe
                 />
-              </lineSegments>
+              </mesh>
             )}
           </group>
         );
@@ -577,6 +575,13 @@ function PlotsCollection3D({
 // =========================================================================
 // 8. First-Person Walk Controller (WASD + Mouse Look + Gyro / Joysticks)
 // =========================================================================
+// Static reusable vectors to eliminate GC memory allocations inside 60fps render loop
+const _forwardVec = new THREE.Vector3();
+const _rightVec = new THREE.Vector3();
+const _moveDirVec = new THREE.Vector3();
+const _dirVec = new THREE.Vector3();
+const _targetVec = new THREE.Vector3();
+
 interface WalkCameraControllerProps {
   moveVec: JoystickVector;
   lookVec: JoystickVector;
@@ -589,6 +594,8 @@ function WalkCameraController({
   onRotationUpdate,
 }: WalkCameraControllerProps) {
   const { camera, gl } = useThree();
+  const lastRotationTime = useRef<number>(0);
+  const lastReportedHeading = useRef<number>(0);
 
   const state = useRef({
     // Start at Entry Gate looking north down the boulevard
@@ -681,8 +688,16 @@ function WalkCameraController({
       s.pitch = Math.max(-1.25, Math.min(1.25, s.pitch));
     }
 
-    const headingDeg = THREE.MathUtils.radToDeg(-s.yaw) % 360;
-    onRotationUpdate(headingDeg);
+    const headingDeg = Math.round(THREE.MathUtils.radToDeg(-s.yaw) % 360);
+    const now = performance.now();
+    if (
+      now - lastRotationTime.current > 120 &&
+      Math.abs(headingDeg - lastReportedHeading.current) > 1.2
+    ) {
+      lastRotationTime.current = now;
+      lastReportedHeading.current = headingDeg;
+      onRotationUpdate(headingDeg);
+    }
 
     let forwardInput = 0;
     let strafeInput = 0;
@@ -699,15 +714,15 @@ function WalkCameraController({
     const speed = baseSpeed * clampedDelta;
 
     if (forwardInput !== 0 || strafeInput !== 0) {
-      const forward = new THREE.Vector3(-Math.sin(s.yaw), 0, -Math.cos(s.yaw));
-      const right = new THREE.Vector3(Math.cos(s.yaw), 0, -Math.sin(s.yaw));
+      _forwardVec.set(-Math.sin(s.yaw), 0, -Math.cos(s.yaw));
+      _rightVec.set(Math.cos(s.yaw), 0, -Math.sin(s.yaw));
 
-      const moveDir = new THREE.Vector3();
-      moveDir.addScaledVector(forward, forwardInput);
-      moveDir.addScaledVector(right, strafeInput);
-      if (moveDir.lengthSq() > 0.001) {
-        moveDir.normalize();
-        s.pos.addScaledVector(moveDir, speed);
+      _moveDirVec.set(0, 0, 0);
+      _moveDirVec.addScaledVector(_forwardVec, forwardInput);
+      _moveDirVec.addScaledVector(_rightVec, strafeInput);
+      if (_moveDirVec.lengthSq() > 0.001) {
+        _moveDirVec.normalize();
+        s.pos.addScaledVector(_moveDirVec, speed);
       }
     }
 
@@ -718,13 +733,13 @@ function WalkCameraController({
 
     camera.position.copy(s.pos);
 
-    const dir = new THREE.Vector3(
+    _dirVec.set(
       -Math.sin(s.yaw) * Math.cos(s.pitch),
       Math.sin(s.pitch),
       -Math.cos(s.yaw) * Math.cos(s.pitch)
     );
-    const target = new THREE.Vector3().copy(s.pos).add(dir);
-    camera.lookAt(target);
+    _targetVec.copy(s.pos).add(_dirVec);
+    camera.lookAt(_targetVec);
   });
 
   return null;
@@ -763,27 +778,49 @@ export function WalkSiteView({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onExitWalk]);
 
+  // Mobile / Tablet performance detection
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile =
+        window.innerWidth < 1024 ||
+        (typeof navigator !== 'undefined' &&
+          /Android|iPhone|iPad|iPod|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));
+      setIsMobile(mobile);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div className="relative w-full h-full bg-slate-950 overflow-hidden select-none">
       {/* 3D WebGL Canvas */}
       <Canvas
-        shadows
+        shadows={!isMobile}
+        dpr={isMobile ? [1, 1.25] : [1, 1.75]}
         camera={{ position: [-10, 1.8, 64], fov: 60 }}
-        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+        gl={{
+          antialias: !isMobile,
+          alpha: false,
+          powerPreference: 'high-performance',
+          stencil: false,
+        }}
         className="w-full h-full cursor-crosshair"
       >
         <color attach="background" args={['#dce5ed']} />
         <fog attach="fog" args={['#dce5ed', 45, 140]} />
 
-        <ambientLight intensity={0.75} />
-        <hemisphereLight args={['#bae6fd', '#fed7aa', 0.65]} />
+        <ambientLight intensity={isMobile ? 0.9 : 0.75} />
+        <hemisphereLight args={['#bae6fd', '#fed7aa', isMobile ? 0.75 : 0.65]} />
 
         <directionalLight
           position={[50, 70, 40]}
-          intensity={1.5}
-          castShadow
-          shadow-mapSize-width={2048}
-          shadow-mapSize-height={2048}
+          intensity={isMobile ? 1.7 : 1.5}
+          castShadow={!isMobile}
+          shadow-mapSize-width={isMobile ? 512 : 1024}
+          shadow-mapSize-height={isMobile ? 512 : 1024}
           shadow-camera-far={200}
           shadow-camera-left={-70}
           shadow-camera-right={70}
@@ -792,7 +829,7 @@ export function WalkSiteView({
           shadow-bias={-0.0004}
         />
 
-        <mesh position={[0, -0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+        <mesh position={[0, -0.01, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow={!isMobile}>
           <planeGeometry args={[400, 400]} />
           <meshStandardMaterial color="#334155" roughness={0.95} />
         </mesh>
@@ -800,7 +837,7 @@ export function WalkSiteView({
         <RoadNetwork3D />
         <EntryGate3D />
         <PerimeterWall3D />
-        <Lampposts3D />
+        <Lampposts3D isMobile={isMobile} />
         <TreesAndPark3D />
 
         <PlotsCollection3D
@@ -809,6 +846,7 @@ export function WalkSiteView({
           hoveredPlot={hoveredPlot}
           onSelectPlot={setSelectedPlot}
           onHoverPlot={setHoveredPlot}
+          isMobile={isMobile}
         />
 
         <WalkCameraController
