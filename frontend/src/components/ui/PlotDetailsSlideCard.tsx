@@ -39,7 +39,7 @@ export function PlotDetailsSlideCard({
   };
 
   return (
-    <div className="absolute left-4 md:left-6 bottom-4 md:bottom-7 z-30 w-[calc(100vw-32px)] sm:w-96 rounded-2xl bg-slate-900/90 backdrop-blur-2xl border border-slate-700/60 shadow-2xl p-5 text-slate-100 flex flex-col gap-4 animate-in fade-in slide-in-from-bottom-6 duration-300 pointer-events-auto">
+    <div className="absolute left-3 right-3 sm:left-6 sm:right-auto bottom-3 sm:bottom-7 z-30 w-auto sm:w-96 max-h-[82dvh] overflow-y-auto rounded-2xl sm:rounded-3xl bg-slate-900/95 backdrop-blur-2xl border border-slate-700/60 shadow-2xl p-4 sm:p-5 text-slate-100 flex flex-col gap-3 sm:gap-4 animate-in fade-in slide-in-from-bottom-6 duration-300 pointer-events-auto">
       {/* Top Header */}
       <div className="flex items-start justify-between">
         <div>
@@ -59,7 +59,7 @@ export function PlotDetailsSlideCard({
               {isZone ? 'Master Zoning' : plot?.zoneLabel}
             </span>
           </div>
-          <h3 className="text-xl font-bold tracking-tight text-white">{title}</h3>
+          <h3 className="text-lg sm:text-xl font-bold tracking-tight text-white">{title}</h3>
         </div>
 
         <button

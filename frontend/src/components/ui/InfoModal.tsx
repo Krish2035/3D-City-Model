@@ -14,27 +14,27 @@ export function InfoModal({ isOpen, onClose, onOpenWhatsApp }: InfoModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200 pointer-events-auto">
-      <div className="relative w-full max-w-xl rounded-2xl bg-slate-900 border border-slate-700/70 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200 pointer-events-auto">
+      <div className="relative w-full max-w-xl rounded-2xl bg-slate-900 border border-slate-700/70 shadow-2xl overflow-hidden flex flex-col max-h-[88dvh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
-          <div className="flex items-center gap-2.5">
-            <Info className="w-5 h-5 text-teal-400" />
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-800">
+          <div className="flex items-center gap-2 sm:gap-2.5">
+            <Info className="w-4 h-4 sm:w-5 sm:h-5 text-teal-400 shrink-0" />
             <div>
-              <h3 className="text-base font-bold text-white tracking-tight">Project Overview & Amenities</h3>
-              <p className="text-xs text-slate-400">{PROJECT_DETAILS.location}</p>
+              <h3 className="text-sm sm:text-base font-bold text-white tracking-tight">Project Overview & Amenities</h3>
+              <p className="text-[11px] sm:text-xs text-slate-400">{PROJECT_DETAILS.location}</p>
             </div>
           </div>
           <button
             onClick={onClose}
             className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto flex flex-col gap-5 text-sm">
+        <div className="p-4 sm:p-6 overflow-y-auto flex flex-col gap-4 sm:gap-5 text-sm">
           {/* About */}
           <div>
             <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">About The Scheme</h4>

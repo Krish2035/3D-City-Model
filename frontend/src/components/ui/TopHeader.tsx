@@ -28,13 +28,13 @@ export function TopHeader({
   ];
 
   return (
-    <header className="absolute top-0 left-0 right-0 z-20 pointer-events-none p-4 md:p-6 flex justify-between items-start">
+    <header className="absolute top-0 left-0 right-0 z-20 pointer-events-none p-3 sm:p-4 md:p-6 flex justify-between items-start">
       {/* Top Left: Logo, Title & Compass */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-2 sm:gap-3">
         {/* Brand Bar */}
-        <div className="flex items-center gap-3 pointer-events-auto">
+        <div className="flex items-center gap-2 sm:gap-3 pointer-events-auto">
           {/* Logo mark */}
-          <div className="relative w-8 h-8 flex items-center justify-center">
+          <div className="relative w-6 h-6 sm:w-8 sm:h-8 flex items-center justify-center">
             <svg
               viewBox="0 0 100 100"
               fill="none"
@@ -57,13 +57,13 @@ export function TopHeader({
           </div>
 
           {/* Project Title */}
-          <h1 className="text-xl md:text-2xl font-bold tracking-wider text-teal-400 font-sans select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+          <h1 className="text-base sm:text-xl md:text-2xl font-bold tracking-wider text-teal-400 font-sans select-none drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             DEMO PROJECT
           </h1>
         </div>
 
         {/* Compass Widget */}
-        <div className="pl-1">
+        <div className="pl-0.5 sm:pl-1">
           <CompassWidget rotation={rotation} onResetRotation={onResetRotation} />
         </div>
       </div>
@@ -74,19 +74,19 @@ export function TopHeader({
           onClick={() => setShowLayerMenu(!showLayerMenu)}
           aria-label="Map layers toggle"
           title="Toggle Map Layers"
-          className="flex items-center justify-center w-11 h-11 rounded-xl bg-slate-900/85 backdrop-blur-md border border-slate-700/60 shadow-xl text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/50 hover:bg-slate-800/90 transition-all active:scale-95 cursor-pointer"
+          className="flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-slate-900/85 backdrop-blur-md border border-slate-700/60 shadow-xl text-emerald-400 hover:text-emerald-300 hover:border-emerald-500/50 hover:bg-slate-800/90 transition-all active:scale-95 cursor-pointer"
         >
           {/* Diamond layers icon matching spacer.land top-right green icon */}
           <div className="relative flex items-center justify-center">
-            <div className="w-5 h-5 rotate-45 border-2 border-emerald-400 bg-emerald-500/20 rounded-[3px] flex items-center justify-center">
-              <div className="w-2 h-2 bg-emerald-400 rounded-sm" />
+            <div className="w-4 h-4 sm:w-5 sm:h-5 rotate-45 border-2 border-emerald-400 bg-emerald-500/20 rounded-[3px] flex items-center justify-center">
+              <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-emerald-400 rounded-sm" />
             </div>
           </div>
         </button>
 
         {/* Dropdown Menu */}
         {showLayerMenu && (
-          <div className="absolute right-0 mt-2 w-56 rounded-xl bg-slate-900/95 backdrop-blur-xl border border-slate-700/70 shadow-2xl p-2 z-30">
+          <div className="absolute right-0 mt-2 w-48 sm:w-56 rounded-xl bg-slate-900/95 backdrop-blur-xl border border-slate-700/70 shadow-2xl p-2 z-30">
             <div className="px-3 py-1.5 text-xs font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800 mb-1">
               Map Style
             </div>

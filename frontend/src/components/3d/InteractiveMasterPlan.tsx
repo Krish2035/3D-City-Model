@@ -290,7 +290,7 @@ export function InteractiveMasterPlan({
           onSelectPlot(null);
         }
       }}
-      className={`relative w-full h-full overflow-hidden select-none bg-[#090b0e] ${
+      className={`relative w-full h-full overflow-hidden select-none bg-[#090b0e] touch-none ${
         isDragging ? 'cursor-grabbing' : 'cursor-grab'
       }`}
     >

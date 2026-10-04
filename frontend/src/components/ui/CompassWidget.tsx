@@ -13,7 +13,7 @@ export function CompassWidget({ rotation, onResetRotation }: CompassWidgetProps)
       onClick={onResetRotation}
       title="Click to orient North"
       aria-label="Compass - Reset North"
-      className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/60 shadow-xl hover:border-teal-500/50 hover:bg-slate-800/90 transition-all active:scale-95 cursor-pointer pointer-events-auto"
+      className="group relative flex items-center justify-center w-11 h-11 sm:w-14 sm:h-14 rounded-full bg-slate-900/80 backdrop-blur-md border border-slate-700/60 shadow-xl hover:border-teal-500/50 hover:bg-slate-800/90 transition-all active:scale-95 cursor-pointer pointer-events-auto"
     >
       {/* Outer Dial Marks */}
       <div className="absolute inset-1 rounded-full border border-slate-700/40" />

@@ -135,18 +135,18 @@ export function VirtualJoystick({
   if (!visible) return null;
 
   return (
-    <div className="absolute inset-x-0 bottom-0 pointer-events-none z-30 select-none pb-6 px-6 md:px-12 flex justify-between items-end">
+    <div className="absolute inset-x-0 bottom-0 pointer-events-none z-30 select-none pb-3 sm:pb-6 px-3 sm:px-6 md:px-12 flex justify-between items-end">
       {/* ======================================================== */}
       {/* LEFT JOYSTICK: Move Forward / Backward / Strafe Left & Right */}
       {/* ======================================================== */}
-      <div className="flex flex-col items-center gap-1.5 pointer-events-auto">
+      <div className="flex flex-col items-center gap-1 sm:gap-1.5 pointer-events-auto">
         <div
           ref={leftBaseRef}
           onPointerDown={handleLeftPointerDown}
           onPointerMove={handleLeftPointerMove}
           onPointerUp={handleLeftPointerUp}
           onPointerCancel={handleLeftPointerUp}
-          className={`relative w-28 h-28 rounded-full border-2 transition-colors touch-none flex items-center justify-center cursor-grab active:cursor-grabbing backdrop-blur-md ${
+          className={`relative w-20 h-20 sm:w-28 sm:h-28 rounded-full border-2 transition-colors touch-none flex items-center justify-center cursor-grab active:cursor-grabbing backdrop-blur-md ${
             leftActive
               ? 'bg-cyan-500/20 border-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.4)]'
               : 'bg-slate-900/60 border-slate-600/70 shadow-xl'
@@ -154,14 +154,14 @@ export function VirtualJoystick({
           style={{ touchAction: 'none' }}
         >
           {/* Subtle directional indicators on the outer ring */}
-          <ArrowUp className="absolute top-2 w-3.5 h-3.5 text-cyan-400/60" />
-          <ArrowDown className="absolute bottom-2 w-3.5 h-3.5 text-cyan-400/60" />
-          <ArrowLeft className="absolute left-2 w-3.5 h-3.5 text-cyan-400/60" />
-          <ArrowRight className="absolute right-2 w-3.5 h-3.5 text-cyan-400/60" />
+          <ArrowUp className="absolute top-1.5 sm:top-2 w-3 sm:w-3.5 h-3 sm:h-3.5 text-cyan-400/60" />
+          <ArrowDown className="absolute bottom-1.5 sm:bottom-2 w-3 sm:w-3.5 h-3 sm:h-3.5 text-cyan-400/60" />
+          <ArrowLeft className="absolute left-1.5 sm:left-2 w-3 sm:w-3.5 h-3 sm:h-3.5 text-cyan-400/60" />
+          <ArrowRight className="absolute right-1.5 sm:right-2 w-3 sm:w-3.5 h-3 sm:h-3.5 text-cyan-400/60" />
 
           {/* Central Thumb Knob */}
           <div
-            className={`w-12 h-12 rounded-full border-2 flex items-center justify-center shadow-lg transition-transform duration-75 ${
+            className={`w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 flex items-center justify-center shadow-lg transition-transform duration-75 ${
               leftActive
                 ? 'bg-cyan-500 border-white text-slate-950 scale-105'
                 : 'bg-slate-800/90 border-cyan-400/50 text-cyan-300'
@@ -171,10 +171,10 @@ export function VirtualJoystick({
               willChange: 'transform',
             }}
           >
-            <div className="w-4 h-4 rounded-full bg-cyan-400/40" />
+            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-cyan-400/40" />
           </div>
         </div>
-        <span className="text-[10px] font-bold tracking-wider uppercase text-cyan-400/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+        <span className="text-[9px] sm:text-[10px] font-bold tracking-wider uppercase text-cyan-400/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
           MOVE (WALK)
         </span>
       </div>
@@ -182,14 +182,14 @@ export function VirtualJoystick({
       {/* ======================================================== */}
       {/* RIGHT JOYSTICK: Look / Turn Left & Right (Yaw & Pitch) */}
       {/* ======================================================== */}
-      <div className="flex flex-col items-center gap-1.5 pointer-events-auto">
+      <div className="flex flex-col items-center gap-1 sm:gap-1.5 pointer-events-auto">
         <div
           ref={rightBaseRef}
           onPointerDown={handleRightPointerDown}
           onPointerMove={handleRightPointerMove}
           onPointerUp={handleRightPointerUp}
           onPointerCancel={handleRightPointerUp}
-          className={`relative w-28 h-28 rounded-full border-2 transition-colors touch-none flex items-center justify-center cursor-grab active:cursor-grabbing backdrop-blur-md ${
+          className={`relative w-20 h-20 sm:w-28 sm:h-28 rounded-full border-2 transition-colors touch-none flex items-center justify-center cursor-grab active:cursor-grabbing backdrop-blur-md ${
             rightActive
               ? 'bg-emerald-500/20 border-emerald-400 shadow-[0_0_20px_rgba(52,211,153,0.4)]'
               : 'bg-slate-900/60 border-slate-600/70 shadow-xl'
@@ -197,14 +197,14 @@ export function VirtualJoystick({
           style={{ touchAction: 'none' }}
         >
           {/* Subtle directional indicators on the outer ring */}
-          <ArrowUp className="absolute top-2 w-3.5 h-3.5 text-emerald-400/60" />
-          <ArrowDown className="absolute bottom-2 w-3.5 h-3.5 text-emerald-400/60" />
-          <RotateCcw className="absolute left-2 w-3.5 h-3.5 text-emerald-400/60" />
-          <RotateCw className="absolute right-2 w-3.5 h-3.5 text-emerald-400/60" />
+          <ArrowUp className="absolute top-1.5 sm:top-2 w-3 sm:w-3.5 h-3 sm:h-3.5 text-emerald-400/60" />
+          <ArrowDown className="absolute bottom-1.5 sm:bottom-2 w-3 sm:w-3.5 h-3 sm:h-3.5 text-emerald-400/60" />
+          <RotateCcw className="absolute left-1.5 sm:left-2 w-3 sm:w-3.5 h-3 sm:h-3.5 text-emerald-400/60" />
+          <RotateCw className="absolute right-1.5 sm:right-2 w-3 sm:w-3.5 h-3 sm:h-3.5 text-emerald-400/60" />
 
           {/* Central Thumb Knob */}
           <div
-            className={`w-12 h-12 rounded-full border-2 flex items-center justify-center shadow-lg transition-transform duration-75 ${
+            className={`w-9 h-9 sm:w-12 sm:h-12 rounded-full border-2 flex items-center justify-center shadow-lg transition-transform duration-75 ${
               rightActive
                 ? 'bg-emerald-500 border-white text-slate-950 scale-105'
                 : 'bg-slate-800/90 border-emerald-400/50 text-emerald-300'
@@ -214,10 +214,10 @@ export function VirtualJoystick({
               willChange: 'transform',
             }}
           >
-            <div className="w-4 h-4 rounded-full bg-emerald-400/40" />
+            <div className="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-emerald-400/40" />
           </div>
         </div>
-        <span className="text-[10px] font-bold tracking-wider uppercase text-emerald-400/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+        <span className="text-[9px] sm:text-[10px] font-bold tracking-wider uppercase text-emerald-400/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
           LOOK (GYRO)
         </span>
       </div>

@@ -26,19 +26,19 @@ export function GalleryModal({ isOpen, onClose }: GalleryModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200 pointer-events-auto">
-      <div className="relative w-full max-w-4xl rounded-2xl bg-slate-900 border border-slate-700/70 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-200 pointer-events-auto">
+      <div className="relative w-full max-w-4xl rounded-2xl bg-slate-900 border border-slate-700/70 shadow-2xl overflow-hidden flex flex-col max-h-[90dvh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-800">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-800">
           <div>
-            <h3 className="text-lg font-bold text-white tracking-tight">Project Gallery</h3>
-            <p className="text-xs text-slate-400">Architectural visualizations & township infrastructure</p>
+            <h3 className="text-base sm:text-lg font-bold text-white tracking-tight">Project Gallery</h3>
+            <p className="text-[11px] sm:text-xs text-slate-400">Architectural visualizations & township infrastructure</p>
           </div>
           <button
             onClick={onClose}
             className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-colors cursor-pointer"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4 sm:w-5 sm:h-5" />
           </button>
         </div>
 
